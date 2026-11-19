@@ -1,0 +1,30 @@
+# Copy to foreman.toml and edit. Paths may be absolute or relative to this file.
+# Nothing here is a shell string: each check is a fixed argv list the agent can only invoke by name.
+
+[foreman]
+state_dir = ".foreman"        # audit.jsonl and approvals.json live here
+allow_writes = true           # false = strictly read-only (request_action/execute_action refuse)
+dry_run_external = false      # true = GitHub writes are simulated (useful in demos and CI)
+# gh_command = "gh"           # or a list, e.g. ["python", "fake_gh.py"] for tests
+# extra_deny_globs = ["appsettings.Production.json"]
+
+[limits]
+max_calls = 300               # per session
+max_session_output_chars = 2000000
+max_result_chars = 24000      # per string field in a single result
+max_file_bytes = 256000
+max_search_results = 200
+check_timeout_s = 900
+
+[repos.my-api]
+path = "~/code/my-api"
+github = "me/my-api"          # enables ci_runs and github_issue requests
+[repos.my-api.checks]
+test = ["dotnet", "test", "--nologo"]
+build = ["dotnet", "build", "--nologo", "-v", "quiet"]
+
+[repos.my-rag]
+path = "~/code/my-rag"
+[repos.my-rag.checks]
+test = [".venv/bin/python", "-m", "pytest", "-q"]
+lint = [".venv/bin/ruff", "check", "."]
